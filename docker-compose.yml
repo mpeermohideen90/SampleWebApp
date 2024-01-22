@@ -11,7 +11,7 @@ services:
      - 8002:1433
     environment:
      - ACCEPT_EULA=Y
-     - MSSQL_SA_PASSWORD=mrAhmad123#
+     - MSSQL_SA_PASSWORD=mrpeer123#
     networks:
      - studentappnetwork
   studentapp:
