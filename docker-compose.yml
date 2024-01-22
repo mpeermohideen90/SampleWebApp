@@ -1,0 +1,28 @@
+version: '3.4'
+
+networks:
+  studentappnetwork:  
+
+services:
+  studentappDB:
+    container_name: studentappDB
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+     - 8002:1433
+    environment:
+     - ACCEPT_EULA=Y
+     - MSSQL_SA_PASSWORD=mrAhmad123#
+    networks:
+     - studentappnetwork
+  studentapp:
+    container_name: studentapp
+    ports:
+     - 8001:80 
+    image: ${DOCKER_REGISTRY-}studentapp
+    build:
+      context: .
+      dockerfile: StudentApp/Dockerfile
+    depends_on:
+     - studentappDB
+    networks:
+     - studentappnetwork
