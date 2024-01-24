@@ -24,9 +24,7 @@ jobs:
         uses: docker/setup-buildx-action@v1 # v3.0.0
 
       - name: Build
-        uses: ./action
-        with:
-          file: ./StudentApp/Dockerfile
+        working-directory: ./StudentApp/Dockerfile
 
       - name: Login Docker Hub
         run: |
