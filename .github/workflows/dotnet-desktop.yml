@@ -1,4 +1,4 @@
-name: Build, Test, and Docker Imagess
+name: Build, Test, and Docker Images
 #Job Started
 on: 
   push:
