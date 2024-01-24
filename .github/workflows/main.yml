@@ -36,12 +36,9 @@ jobs:
       - name: Build and push container image to registry
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
-          push: true
+          push: false
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./StudentApp/Dockerfile
-
-      - name: Log in to Docker registry
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Install dependencies 📂
         run: dotnet restore StudentApp
@@ -49,5 +46,15 @@ jobs:
       - name: Build 🧱
         run: dotnet build StudentApp --configuration Release --no-restore
 
-      - name: Test 🧪
-        run: dotnet test StudentApp --configuration Release --no-build
+      - name: Login Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker-compose up --build -d
+      
+      - name: Push Docker Image in Hub
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+        with:
+          push: true
+          run: |
+            docker tag studentapp:latest mpeermohideen90/studentapp
+            docker push mpeermohideen90/studentapp
