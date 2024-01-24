@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+         path: action
 
       - name: Setup .NET 📦
         uses: actions/setup-dotnet@v3
@@ -21,18 +23,19 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       
       - name: Install dependencies 📂
-        run: dotnet restore StudentApp
-
-      - name: Build 🧱
-        run: dotnet build StudentApp --configuration Release --no-restore
+        run: dotnet restore
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1 # v3.0.0
 
+      - name: Build
+        uses: ./action
+        with:
+          file: ./StudentApp/Dockerfile
+
       - name: Login Docker Hub
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker-compose up --build -d
       
       - name: Push Docker Image in Hub
         run: |
