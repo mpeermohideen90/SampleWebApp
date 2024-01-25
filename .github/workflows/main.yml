@@ -28,7 +28,7 @@ jobs:
         with:
           push: false
           #tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
-          file: ./StudentApp/Dockerfile
+          run: docker-compose up --build -d 
 
       - name: Login Docker Hub
         run: |
