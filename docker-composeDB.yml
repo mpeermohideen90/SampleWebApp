@@ -14,15 +14,3 @@ services:
      - MSSQL_SA_PASSWORD=mrpeer123#
     networks:
      - studentappnetwork
-  studentapp:
-    container_name: studentapp
-    ports:
-     - 8001:80 
-    image: ${DOCKER_REGISTRY-}studentapp
-    build:
-      context: .
-      dockerfile: StudentApp/Dockerfile
-    depends_on:
-     - studentappDB
-    networks:
-     - studentappnetwork

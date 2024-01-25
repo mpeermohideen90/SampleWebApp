@@ -1,0 +1,57 @@
+name: Build, Test, and Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0' 
+
+  docker:
+
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker Image frontEnd
+      uses: docker/build-push-action@v4
+      with:
+        context: StudentApp/
+      run: |
+        docker build -t studentapp:latest .
+        docker tag studentapp:latest studentapp:$(date +%Y%m%d%H%M%S)
+
+    - name: Build Docker Image BackEnd
+      with:
+        context: .
+      run: |
+        docker build -t studentappDB:latest .
+        docker tag studentappDB:latest studentappDB:$(date +%Y%m%d%H%M%S)
+
+    - name: Push Docker Image
+      run: |
+        docker push studentapp:latest
+        docker push studentapp:$(date +%Y%m%d%H%M%S)
